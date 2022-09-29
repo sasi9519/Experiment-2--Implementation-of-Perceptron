@@ -137,7 +137,18 @@ Output:
 
 
 
-Result:
+
+
+
+
+
 
 ![op2](https://user-images.githubusercontent.com/83326978/193039702-7866cfac-d0de-46de-af55-4a989d768b61.png)
 
+
+
+
+
+
+Result:
+Thus,a perceptron for classification using Python is executed successfully
