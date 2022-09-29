@@ -43,3 +43,101 @@ Print the accuracy
 
 
  PROGRAM:
+ 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+class Perceptron:
+ def _init_(self, learning_rate=0.1):
+   self.learning_rate = learning_rate
+   self._b = 0.0  # y-intercept
+   self._w = None  # weights assigned to input features
+   self.misclassified_samples = []
+ def fit(self, x: np.array, y: np.array, n_iter=10):
+   self._b = 0.0
+   self._w = np.zeros(x.shape[1])
+   self.misclassified_samples = []
+   for _ in range(n_iter):
+     # counter of the errors during this training iteration
+     errors = 0
+     for xi, yi in zip(x, y):
+       update = self.learning_rate * (yi - self.predict(xi))
+       self._b += update
+       self._w += update * xi
+       errors += int(update != 0.0)
+     self.misclassified_samples.append(errors)
+ def f(self, x: np.array) -> float:
+   return np.dot(x, self._w) + self._b
+ def predict(self, x: np.array):
+   return np.where(self.f(x) >= 0, 1, -1)
+
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+df = pd.read_csv(url, header=None)
+df.head()
+y = df.iloc[:, 4].values
+x = df.iloc[:, 0:3].values
+x = x[0:100, 0:2]  # reduce the dimensionality of the data
+y = y[0:100]
+plt.scatter(x[:50, 0], x[:50, 1], color='red', marker='o', label='Setosa')
+plt.scatter(x[50:100, 0], x[50:100, 1], color='blue', marker='x',
+           label='Versicolour')
+
+plt.xlabel("Sepal length")
+plt.ylabel("Petal length")
+plt.legend(loc='upper left')
+
+plt.show()
+
+y = np.where(y == 'Iris-setosa', 1, -1)
+
+
+
+x[:, 0] = (x[:, 0] - x[:, 0].mean()) / x[:, 0].std()
+x[:, 1] = (x[:, 1] - x[:, 1].mean()) / x[:, 1].std()
+
+
+from matplotlib.colors import ListedColormap
+
+def plot_decision_regions(x, y):
+   resolution = 0.001
+   markers = ('o', 'x')
+   cmap = ListedColormap(('red', 'blue'))
+   x1_min, x1_max = x[:, 0].min() - 0.5, x[:, 0].max() + 0.5
+   x2_min, x2_max = x[:, 1].min() - 0.5, x[:, 1].max() + 0.5
+   xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, resolution),
+                          np.arange(x2_min, x2_max, resolution))
+   Z = classifier.predict(np.array([xx1.ravel(), xx2.ravel()]).T)
+   Z = Z.reshape(xx1.shape)
+   plt.contourf(xx1, xx2, Z, alpha=0.4, cmap=cmap)
+   plt.xlim(xx1.min(), xx1.max())
+   plt.ylim(xx2.min(), xx2.max()) 
+   for idx, c1 in enumerate(np.unique(y)):
+       plt.scatter(x=x[y == c1, 0],
+                   y=x[y == c1, 1], 
+                   alpha=0.8, 
+                   c=cmap(idx), 
+                   marker=markers[idx], 
+                   label=c1)
+   plt.show()
+
+plot_decision_regions(x_test, y_test)
+
+ 
+Output:
+
+
+
+![op1](https://user-images.githubusercontent.com/83326978/193039675-9e754f1d-23d7-47a6-b745-a7cbc675571a.png)
+
+
+
+
+
+Result:
+
+![op2](https://user-images.githubusercontent.com/83326978/193039702-7866cfac-d0de-46de-af55-4a989d768b61.png)
+
